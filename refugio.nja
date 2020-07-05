@@ -1,0 +1,30 @@
+{
+  "mainFile": "", 
+  "use-tabs": false, 
+  "venv": "C:\\Users\\Luis\\Documents\\proyectos_python\\curso-python\\test19\\Scripts\\python.exe", 
+  "relatedProjects": [], 
+  "name": "refugio", 
+  "license": "Apache License 2.0", 
+  "url": "", 
+  "pythonPath": "python", 
+  "preExecScript": "", 
+  "additional_builtins": [], 
+  "programParams": "", 
+  "indentation": 4, 
+  "PYTHONPATH": "", 
+  "supported-extensions": [
+    ".py", 
+    ".html", 
+    ".jpg", 
+    ".png", 
+    ".ui", 
+    ".css", 
+    ".json", 
+    ".js", 
+    ".ini", 
+    ".txt"
+  ], 
+  "project-type": "", 
+  "postExecScript": "", 
+  "description": ""
+}

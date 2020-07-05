@@ -1,0 +1,596 @@
+
+
+-------------------------------------
+Iteraci�n 1: instalar la ultima versi�n de python 3
+-------------------------------------
+Ubuntu
+-------
+sudo apt install python3
+sudo apt install python3-pip
+sudo apt install python3-venv
+pip3 install virtualenv
+pyvenv django1
+source django1/bin/activate
+pip install --upgrade pip
+pip install django-bootstrap-ui
+-----------------
+sudo apt-get install python-dev python3-dev
+sudo apt-get install libmysqlclient-dev
+sudo apt-get install libmysqlclient-dev
+-------------------
+pip install pymysql
+pip install mysqlclient
+deactivate
+
+Windows
+-------
+python -m pip install django
+python -m venv test19
+test19\Scripts\activate
+deactivate
+---------------------------
+Iteraci�n 2: instalar django con el comando
+------------------------------
+python -m pip install django
+python -m pip install django==1.10.7
+python -m pip install django==1.11.10
+python -m pip install django-bootstrap-ui
+python -m pip install mysqlclient
+easy_install mysql-python
+python -m pip freeze
+
+
+----------------------------------
+Iteraci�n 3: Instalar virtualenv
+-----------------------------------
+python -m pip install virtualenv
+
+--------------------------------------------------------
+Iteraci�n 4: Creaci�n y configuraci�n de entorno virtual
+---------------------------------------------------------
+usar cmd para que funcione el ejecutar el activate
+python -m venv test19
+cd test19
+cd Scripts
+DIR
+activate
+
+-----------------------
+Iteraci�n 5: Instalaci�n de django en entorno virtual
+------------------------------------------------
+dentro de test19
+python -m pip install django
+para saber paquetes instalados
+
+python -m pip freeze
+
+luego ejecutar
+deactivate
+
+-----------------------
+Iteraci�n 6: Crear proyecto django
+----------------------------------
+django-admin.py
+(Utilidad de l�nea de comandos de Django)
+
+django-admin.py startproject nombreproyecto
+django-admin.py startapp nombreproyecto
+django-admin.py createsuperuser
+
+manage.py (empaquetador de django-admin.py)
+sus comandos
+manage.py makemigrations
+manage.py migrate
+manage.py runserver
+
+comandos para crear proyectos
+test19\Scripts\activate
+(test19)
+donde se quiere crear el proyecto
+django-admin.py startproject Test
+cd Test
+manage.py migration
+manage.py createsuperuser
+admin
+LCPaye2014
+
+-------------------------------------
+Iteraci�n 7: Crear proyecto de refugio
+-----------------------------------------
+django-admin.py startproject refugio
+cd refugito
+mkdir apps
+cd apps
+django-admin.py startapp mascota
+django-admin.py startapp adopcion
+cd ..
+este no funciona
+------------------
+python -m pip install mysqlclient
+
+probar con este comando que es el que funciona
+-----------------------
+easy_install mysql-python
+
+settings.py
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'refugio',
+        'USER': 'root',
+        'PASSWORD': '',
+    }
+}
+
+manage.py migrate
+
+-----------------------------------
+Iteraci�n 8: Modelos y Migraciones
+-----------------------------------
+creamos en adopcion el modelo Persona
+cramos en mascota el modelo Mascota
+luego
+manage.py makemigrations
+manage.py migrate
+
+-----------------------
+Iteraci�n 8: Relaciones
+-----------------------
+una persona puede tener varios registros de mascota
+relaci�n de persona de mascota
+relaci�n de vacuna con mascota
+
+manage.py makemigrations
+manage.py migrate
+
+admin.py de mascota
+admin.py de adopcion
+luego
+
+manage.py createsuperuser
+
+registrar a una persona
+registrar a una vacuna
+registrar a una mascota
+
+--------------------------------------
+Iteraci�n 9: Django Shell y Querysets
+--------------------------------------
+
+editar modelo mascota
+luego
+manage.py makemigrations
+manage.py migrate
+
+al realizar eso tuve que crear el proyecto desde cero
+eliminar la base de datos volverla a crear
+todo
+manage.py shell
+from apps.adopcion.models import Persona
+from apps.mascota.models import Vacuna,Mascota
+
+Persona.objects.create(nombre="Luis",apellido="Correa",edad=26,telefono="3434123",email="alberto13711@gmail.com",domicilio="Venezuela")
+#si se usan variables hay que hacerlo as�
+p = Persona.objects.create(nombre="Percy",apellido="Correa",edad=67,telefono="3434123",email="percyelias20@outlook.com",domicilio="Venezuela")
+p.save()
+
+v1 = Vacuna(nombre="vacuna 3")
+v1.save()
+mascota1 = Mascota.objects.create(nombre="Pepe",sexo="macho",edad_aproximada=1,fecha_rescate="2016-09-01",persona=p)
+mascota1.save()
+mascota1.vacuna.add(v1)
+
+Mascota.objects.all()
+Mascota.objects.filter(id=1)
+Mascota.objects.filter(nombre__contains="1")
+
+
+---------------------------------------------
+Iteraci�n 10: Configurar URLs y primera view
+---------------------------------------------
+Se modifican
+mascota/views.py
+mascota/urls.py
+adopcion/views.py
+adopcion/urls.py
+urls.py
+
+---------------------------------------------
+Iteraci�n 11: Sistema de plantillas
+---------------------------------------------
+Conceptos
+-Variables
+-Tags
+{%load%}
+-Herencia de plantillas
+settigs.py
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+------------------------------------
+Iteraci�n 12: Herencia de plantillas
+------------------------------------
+crear templates en la raiz del proyecto
+crear
+templates/base/base.html
+templates/mascota/index.html
+
+-------------------------------------------
+Iteraci�n 13: Configurar archivos est�ticos
+-------------------------------------------
+crear carpeta static dentro de carpeta raiz refugio
+refugio/static
+static/js
+static/css
+js/bootstrap
+css/bootstrap
+base.html se agregan los archivos estaticos
+
+-------------------------------------------
+Iteraci�n 14: Formularios y vistas basadas en funciones crear
+-------------------------------------------
+crear templates/mascota/mascota_form.html
+
+
+crear refugio/apps/mascota/forms.py
+class MascotaForm(forms.ModelForm):
+
+editar refugio/apps/mascota/views.py
+def mascota_view(request):
+    if request.method == 'POST':
+        form = MascotaForm(request.POST)
+        if form.is_valid():
+            form.save()
+        return redirect('mascota:index')
+    else:
+        form = MascotaForm()
+    return render(request, 'mascota/mascota_form.html',{'form':form})
+
+editar refugio/apps/mascota/urls.py
+url(r'^nuevo$', mascota_view, name='mascota_crear'),
+#se accede localhost:8000/mascota/nuevo
+
+editar refugio/apps/adopcion/models.py
+__str__ funciona como un toString Java
+class Persona(models.Model):
+    ...
+    def __str__(self):
+        return '{} {}'.format(self.nombre, self.apellido)
+
+editar refugio/apps/mascota/models.py
+class Vacuna(models.Model):
+    ...
+    def __str__(self):
+        return '{}'.format(self.nombre)
+
+
+-------------------------------------------
+Iteraci�n 15: Listar registros (vistas basadas en funciones)
+-------------------------------------------
+crear templates/mascota/mascota_list.html
+
+editar refugio/apps/mascota/views.py
+def mascota_list(request):
+    mascota = Mascota.objects.all().order_by('id')
+    contexto = {'mascotas':mascota}
+    return render(request, 'mascota/mascota_list.html', contexto)
+
+editar refugio/apps/mascota/urls.py
+url(r'^listar$', mascota_list, name='mascota_listar'),
+#se accede localhost:8000/mascota/listar
+
+
+-------------------------------------------
+Iteraci�n 16: Vistas basadas en funciones actualizar y eliminar
+-------------------------------------------
+editar refugio/apps/mascota/views.py
+
+def mascota_edit(request, id_mascota):
+    mascota = Mascota.objects.get(id=id_mascota)
+    if request.method == 'GET':
+        form = MascotaForm(instance=mascota)
+    else:
+        form = MascotaForm(request.POST, instance=mascota)
+        if form.is_valid():
+            form.save()
+        return redirect('mascota:mascota_listar')
+    return render(request, 'mascota/mascota_form.html', {'form':form})
+
+def mascota_delete(request, id_mascota):
+    mascota = Mascota.objects.get(id=id_mascota)
+    if request.method == 'POST':
+        mascota.delete()
+        return redirect('mascota:mascota_listar')
+    return render(request, 'mascota/mascota_delete.html', {'mascota':mascota})
+
+
+editar refugio/apps/mascota/urls.py
+url(r'^editar/(?P<id_mascota>\d+)/$', mascota_edit, name='mascota_editar'),
+url(r'^eliminar/(?P<id_mascota>\d+)/$', mascota_delete, name='mascota_eliminar'),
+#localhost:8000/mascota/editar
+#localhost:8000/mascota/eliminar
+
+editar templates/mascota/mascota_list.html
+crear templates/mascota/mascota_delete.html
+
+-------------------------------------------
+Iteraci�n 17: Vistas basadas en clases, ListView y CreateView
+-------------------------------------------
+editar refugio/apps/mascota/views.py
+class MascotaList(ListView):
+    model = Mascota
+    template_name = 'mascota/mascota_list.html'
+    paginate_by = 2
+
+
+class MascotaCreate(CreateView):
+    model = Mascota
+    form_class = MascotaForm
+    template_name = 'mascota/mascota_form.html'
+    success_url = reverse_lazy('mascota:mascota_listar')
+
+
+editar refugio/apps/mascota/urls.py
+url(r'^listar$', MascotaList.as_view(), name='mascota_listar'),
+url(r'^nuevo$', MascotaCreate.as_view(), name='mascota_crear'),
+
+editar templates/mascota/mascota_list.html
+{% if mascotas %}
+{% for mascota in mascotas %}
+a
+{% if object_list %}
+{% for mascota in object_list %}
+
+
+-------------------------------------------
+Iteraci�n 18: UpdateView y DeleteView
+-------------------------------------------
+editar refugio/apps/mascota/views.py
+class MascotaUpdate(UpdateView):
+    model = Mascota
+    form_class = MascotaForm
+    template_name = 'mascota/mascota_form.html'
+    success_url = reverse_lazy('mascota:mascota_listar')
+
+
+class MascotaDelete(DeleteView):
+    model = Mascota
+    template_name = 'mascota/mascota_delete.html'
+    success_url = reverse_lazy('mascota:mascota_listar')
+
+
+editar refugio/apps/mascota/urls.py
+url(r'^editar/(?P<pk>\d+)/$', MascotaUpdate.as_view(), name='mascota_editar'),
+url(r'^eliminar/(?P<pk>\d+)/$', MascotaDelete.as_view(), name='mascota_eliminar'),
+
+
+-------------------------------------------
+Iteraci�n 19: CRUD con dos formularios Parte 1
+-------------------------------------------
+editar refugio/apps/adopcion/models.py
+class Solicitud(models.Model):
+    persona = models.ForeignKey(Persona, null=True, blank=True)
+    numero_mascotas = models.IntegerField()
+    razones = models.TextField()
+
+
+luego
+manage.py makemigrations
+manage.py migrate
+
+crear refugio/apps/adopcion/forms.py
+class PersonaForm(forms.ModelForm):
+...
+
+
+class SolicitudForm(forms.ModelForm):
+...
+
+
+editar refugio/apps/adopcion/views.py
+class SolicitudList(ListView):
+...
+
+
+class SolicitudCreate(CreateView):
+...
+
+
+class SolicitudUpdate(UpdateView):
+...
+
+
+editar refugio/apps/adopcion/urls.py
+url(r'^solicitud/nueva$', SolicitudCreate.as_view(), name='solicitud_crear'),
+
+crear refugio/templates/adopcion/solicitud_form.html
+
+-------------------------------------------
+Iteraci�n 20: CRUD con dos formularios Parte 2
+-------------------------------------------
+
+editar refugio/apps/adopcion/views.py
+class SolicitudUpdate(UpdateView):
+    ...
+
+
+class SolicitudDelete(DeleteView):
+    ...
+
+editar refugio/apps/adopcion/urls.py
+url(r'^solicitud/editar/(?P<pk>\d+)$', SolicitudUpdate.as_view(), name='solicitud_editar'),
+#localhost:8000/adopcion/solicitud/editar/1
+
+url(r'^solicitud/eliminar/(?P<pk>\d+)$', SolicitudDelete.as_view(), name='solicitud_eliminar'),
+
+
+-------------------------------------------
+Iteraci�n 21: Registro de Usuarios
+-------------------------------------------
+dentro de: refugio/apps/
+ejecutar django-admin.py startapp usuario
+
+editar refugio/apps/usuario/views.py
+
+crear refugio/apps/usuario/forms.py
+
+crear refugio/apps/usuario/urls.py
+
+crear refugio/templates/usuario/registrar.html
+
+editar refugio/refugio/urls.py
+url(r'^usuario/', include('apps.usuario.urls', namespace='usuario')),
+
+-------------------------------------------
+Iteraci�n 22: Crear login (facilito)
+-------------------------------------------
+crear refugio/templates/index.html
+
+
+editar refugio/refugio/urls.py
+url(r'^$', login, {'template_name':'index.html'}, name='login'),
+
+editar refugio/refugio/settings.py
+LOGIN_REDIRECT_URL = reverse_lazy('adopcion:solicitud_listar')
+
+
+
+-------------------------------------------
+Iteraci�n 23: Recuperar contrase�a por correo (facilito)
+-------------------------------------------
+editar refugio/refugio/settings.py
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'cursodjangocf@gmail.com'
+EMAIL_HOST_PASSWORD = 'cursodjango16'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+crear refugio/templates/registration/password_reset_complete.html
+crear refugio/templates/registration/password_reset_confirm.html
+crear refugio/templates/registration/password_reset_done.html
+crear refugio/templates/registration/password_reset_email.html
+crear refugio/templates/registration/password_reset_form.html
+
+editar refugio/refugio/urls.py
+#Envio de correo
+url(r'^reset/password_reset', password_reset,
+        {'template_name':'registration/password_reset_form.html',
+        'email_template_name': 'registration/password_reset_email.html'},
+        name='password_reset'),
+
+#ya fue enviado el correo
+url(r'^password_reset_done', password_reset_done,
+        {'template_name': 'registration/password_reset_done.html'},
+        name='password_reset_done'),
+
+#
+url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$', password_reset_confirm,
+        {'template_name': 'registration/password_reset_confirm.html'},
+        name='password_reset_confirm'
+        ),
+
+#
+url(r'^reset/done', password_reset_complete, {'template_name': 'registration/password_reset_complete.html'},
+        name='password_reset_complete'),
+
+correo de prueba
+-----------------
+libreriaomega3@gmail.com
+LOPaye2014
+
+
+--------------------------------------
+Iteraci�n 24: Decorador login required
+--------------------------------------
+editar refugio/apps/mascota/urls.py
+url(r'^nuevo$', login_required(MascotaCreate.as_view()), name='mascota_crear'),
+url(r'^listar', login_required(MascotaList.as_view()), name='mascota_listar'),
+url(r'^editar/(?P<pk>\d+)/$', login_required(MascotaUpdate.as_view()), name='mascota_editar'),
+url(r'^eliminar/(?P<pk>\d+)/$', login_required(MascotaDelete.as_view()), name='mascota_eliminar'),
+
+editar refugio/refugio/urls.py
+url(r'^accounts/login/', login, {'template_name':'index.html'}, name='login'),
+url(r'^logout/', logout_then_login, name='logout'),
+
+editar refugio/refugio/settings.py
+LOGOUT_REDIRECT_URL = reverse_lazy('login')
+
+
+--------------------------------------
+Iteraci�n 25: Serializar objetos
+--------------------------------------
+editar refugio/apps/mascota/views.py
+def listadousuarios(request):
+    lista = serializers.serialize('json', User.objects.all(), fields=['username', 'first_name'])
+    return HttpResponse(lista, content_type='application/json')
+
+editar refugio/apps/mascota/urls.py
+url(r'^listado', listadousuarios, name="listado"),
+#http://localhost:8000/mascota/listado
+
+--------------------------------------
+Iteraci�n 26: P�ginaci�n
+--------------------------------------
+editar refugio/apps/mascota/views.py
+class MascotaList(ListView):
+    ...
+    paginate_by = 2
+
+editar refugio/templates/mascota/mascota_list.html
+...
+<ul class="pager">
+    <li>
+        {% if page_obj.has_previous %}
+         <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        </li>
+    <li>
+        {% if page_obj.has_next %}
+         <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        {% endif %}
+    </li>
+</ul>
+{% endblock%}
+
+--------------------------------------
+Iteraci�n 27:
+--------------------------------------
+python -m pip install djangorestframework
+
+crear refugio/apps/usuario/serializers.py
+
+editar refugio/apps/usuario/views.py
+class UserAPI(APIView):
+...
+
+crear refugio/apps/usuario/urls.py
+url(r'^api', UserAPI.as_view(), name="api"),
+http://localhost:8000/usuario/api
+
+
+
+
+
+
+
+
+
+
+
+
+
+
